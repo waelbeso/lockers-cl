@@ -29,18 +29,18 @@ install_requires=[
 ]
 
 setup(
-    name = "lockers-cl",
+    name = "lockers",
     entry_points = {
-    'console_scripts': ['lockers-cl=locker:main'],
+    'console_scripts': ['lockers=lockers:main'],
     },
     version = "0.0.1",
-    py_modules=['locker','manage'],
+    py_modules=['lockers','manage'],
     #scripts=['requirements.txt'],
     author = "Wael El-begearmi",
     author_email = "waelabbas@live.com",
-    description = ("Smart locker management Application"),
+    description = ("Smart lockers management Application"),
     license = "BSD",
-    keywords = "ftrina smart locker ",
+    keywords = "ftrina smart lockers ",
     url = "https://www.ftrina.com",
     packages=['cl','static','templates','web'],
     include_package_data=True,

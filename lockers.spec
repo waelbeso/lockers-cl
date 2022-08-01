@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['app3.py'],
+    ['lockers.py'],
     pathex=[],
     binaries=[],
     datas= [
@@ -29,7 +29,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='app3',
+    name='lockers',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -49,5 +49,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='app3',
+    name='lockers',
 )
