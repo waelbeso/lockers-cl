@@ -28,7 +28,7 @@ def app_main():
 
     def start_django():
         django = runserver
-        GLib.idle_add(django.run(port=PORT,addr=bytearray(IP,"ascii"),wsgi_handler=get_wsgi_application()) )
+        GLib.idle_add(django.run(port=PORT,addr=IP ,wsgi_handler=get_wsgi_application()) )
 
 
     win.show_all()
