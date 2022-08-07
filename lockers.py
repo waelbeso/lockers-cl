@@ -26,9 +26,9 @@ def app_main():
 
     webView.load_uri(ROOT_URL) # Here it works on main thread
 
-    def start_django():
-        django = runserver
-        GLib.idle_add(django.run(port=PORT,addr=IP ,wsgi_handler=get_wsgi_application()) )
+    #def start_django():
+    #    django = runserver
+    #    GLib.idle_add(django.run(port=PORT,addr=IP ,wsgi_handler=get_wsgi_application()) )
 
 
     win.show_all()
