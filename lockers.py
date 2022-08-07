@@ -31,10 +31,10 @@ def app_main():
     #    GLib.idle_add(django.run(port=PORT,addr=IP ,wsgi_handler=get_wsgi_application()) )
 
 
-    win.show_all()
-    thread = threading.Thread(name = "Django", target=start_django)
-    thread.daemon = True
-    thread.start()
+    #win.show_all()
+    #thread = threading.Thread(name = "Django", target=start_django)
+    #thread.daemon = True
+    #thread.start()
 
 
 
