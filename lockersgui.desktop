@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=lockers
+GenericName=Document Encryption
+Comment=GUI for lockers
+Exec=lockers
+Icon=${SNAP}/gui/ocrmypdfgui.png
+Terminal=false
+Type=Application
+Categories=Utility;
+StartupNotify=true
