@@ -21,6 +21,12 @@
     window.onload = function() {
     var input = document.getElementById("CodeNumberInput").focus();
     }
+    document.onkeydown = function(evt) {
+      evt = evt || window.event;
+      if (evt.keyCode == 27) {
+        location.reload();
+      }
+    };
     </script>
     
   </head>
