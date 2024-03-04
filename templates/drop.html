@@ -1,58 +1,38 @@
 {% load static %}
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <base href="./">
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <meta name="description" content="Camera Man Management System Platform">
-    <meta name="author" content="CMMS">
-    <meta name="keyword" content="Camera,Man,Management,System">
-    {% block head %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
 
-    {% endblock %}
-   
-    <link rel="apple-touch-icon" sizes="57x57" href="assets/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="assets/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="assets/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="assets/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="assets/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="assets/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="assets/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="assets/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
-    <link rel="manifest" href="assets/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="assets/favicon/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-   
-    <!-- Main styles for this application-->
-    <link rel="stylesheet" href='{% static "assets/css/style.css"%}'>
-    <link rel="stylesheet" href='{% static "vendors/@coreui/coreui-chartjs/css/coreui-chartjs.css"%}'>
-    <!-- Global site tag (gtag.js) - Google Analytics-->
-    <!--
-    <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
+    <title>Ftrina</title>
 
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag('js', new Date());
-      // Shared ID
-      gtag('config', 'UA-118965717-3');
-      // Bootstrap ID
-      gtag('config', 'UA-118965717-5');
-    </script>
-  -->
-    
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/cover/">
+
+    <!-- Bootstrap core CSS -->
+    <link href='{% static "dist/css/bootstrap.min.css"%}'rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href='{% static "cover.css" %}' rel="stylesheet">
   </head>
+
+  <body class="text-center">
+
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <!-- <h3 class="masthead-brand">Ftrina</h3> -->
+          <nav class="nav nav-masthead justify-content-center">
+            <!--<a class="nav-link" href="#">العربية</a>-->
+          </nav>
+        </div>
+      </header>
+
+
+
   <body class="c-app">
 
     <div class="c-wrapper c-fixed-components">
@@ -81,21 +61,32 @@
 <div class="row" >
   <div class="col-sm-6"  >
     <div class="card" style="width: 18rem;">
-      <img  src='{% static "pick.png"%}' class="card-img-top">
+      <img  src='{% static "A1.png"%}'  width="10" height="300" class="card-img-top" >
       <div class="card-body">
-        <h5 class="card-title">Pick Parcels</h5>
-        <p class="card-text">Select if you want to Pick-up parcels from our lockers.</p>
-        <a href="#" class="btn btn-primary">Select</a>
+        <h5 class="card-title">A 1 Cell</h5>
+
+        <a href="#" class="btn btn-primary">Oped</a>
+        <a href="#" class="btn btn-primary">Generate code</a>
       </div>
     </div>
   </div>
   <div class="col-sm-6">
     <div class="card" style="width: 18rem;">
-      <img src='{% static "drop.png"%}' class="card-img-top">
+      <img src='{% static "A2.png"%}' width="10" height="300" class="card-img-top">
       <div class="card-body">
-        <h5 class="card-title">Drop Parcels</h5>
-        <p class="card-text">Select if you want to drop parcels in our lockers.</p>
-        <a href="#" class="btn btn-primary">Select</a>
+        <h5 class="card-title">A 3 Cell</h5>
+        <a href="#" class="btn btn-primary">Oped</a>
+        <a href="#" class="btn btn-primary">Generate code</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card" style="width: 18rem;">
+      <img src='{% static "A3.png"%}'  width="10" height="300" class="card-img-top">
+      <div class="card-body">
+        <h5 class="card-title">A 2 Cell</h5>
+        <a href="#" class="btn btn-primary">Oped</a>
+        <a href="#" class="btn btn-primary">Generate code</a>
       </div>
     </div>
   </div>
