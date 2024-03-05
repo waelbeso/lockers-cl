@@ -1,24 +1,14 @@
 from django.db import models
 
 # Create your models here.
-class Pick(models.Model):
+class Cell(models.Model):
     '''
-    Pick parcels
-    '''
-    id        = models.AutoField(primary_key=True)
-    mobile    = models.IntegerField()
-    code      = models.IntegerField()
-
-    def __str__(self):
-        return self.id
-
-class Drop(models.Model):
-    '''
-    Drop parcels
+    Cell Key
     '''
     id        = models.AutoField(primary_key=True)
-    number    = models.IntegerField()
-    code      = models.IntegerField()
-    
+    cell      = models.TextField()
+    code      = models.TextField()
+    used      = models.BooleanField(default=False)
+
     def __str__(self):
         return self.id

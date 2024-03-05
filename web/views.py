@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
+import os
 from django.shortcuts import render
 from django.http import HttpResponse , HttpResponseRedirect
 from django.template.context_processors import csrf
 from . import forms
 from . import models
-# Create your views here.
 import requests
 import serial
+import string
+import random
+import qrcode
+import time
+from django.core.exceptions import ObjectDoesNotExist
+
+def key_generator(size=12, chars=string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 def home(request):
     data = {}
@@ -18,90 +26,107 @@ def home(request):
             print (
                 'Code Number',form.cleaned_data['code'],
                 )
-            CODE = form.cleaned_data['code']
-            #ROOT_URL = f'http://127.0.0.1:8080/check/{CODE}'
-            #r = requests.get(ROOT_URL)
-            #print(r.status_code)
-            #import subprocess
-            #subprocess.call(['sh', './on.sh']) 
-            #subprocess.call(['sh', './off.sh']) ttyUSB0
-            if CODE == "01":
-                return render(request, 'drop.html', { 'form':form })
-            if CODE == "10101":
-                print (" Box 1")
-                ser = serial.Serial('/dev/ttyUSB0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                ser.write(serial.to_bytes([0x7A,0x02,0x01,0x33,0xc5])) # open Box 1
-                print (ser.read())
-            if CODE == "10102":
-                print (" Box 2")
-                ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                ser.write(serial.to_bytes([0x7A,0x01,0x02,0x33,0x4A])) # open Box 2
-                print (ser.read())
-            if CODE == "10103":
-                print (" Box 3")
-                ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                ser.write(serial.to_bytes([0x7A,0x01,0x03,0x33,0x4B])) # open Box 3
-                print (ser.read())
-            if CODE == "10104":
-                print (" Box 4")
-                ser = serial.Serial('/dev/ttyUSB0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                ser.write(serial.to_bytes([0x7A,0x01,0x04,0x33,0x4C])) # open Box 4
-                print (ser.read())
-            if CODE == "10105":
-                print (" Box 5")
-                ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                ser.write(serial.to_bytes([0x7A,0x01,0x05,0x33,0x4D])) # open Box 5
-                print (ser.read())
-            if CODE == "10106":
-                print (" Box 6")
-                ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                ser.write(serial.to_bytes([0x7A,0x01,0x06,0x33,0x4E])) # open Box 6
-                print (ser.read())
-            if CODE == "10107":
-                print (" Box 7")
-                ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                ser.write(serial.to_bytes([0x7A,0x01,0x07,0x33,0x4F])) # open Box 7
-                print (ser.read())
-            if CODE == "10108":
-                print (" Box 8")
-                ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                ser.write(serial.to_bytes([0x7A,0x01,0x08,0x33,0x40])) # open Box 8
-                print (ser.read())
-            if CODE == "10109":
-                print (" Box 9")
-                ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                ser.write(serial.to_bytes([0x7A,0x01,0x09,0x33,0x41])) # open Box 9
-                print (ser.read())
-            if CODE == "101010":
-                print (" Box 10")
-                ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                ser.write(serial.to_bytes([0x7A,0x01,0x0A,0x33,0x42])) # open Box 10
-                print (ser.read())
-            if CODE == "101011":
-                print (" Box 11")
-                ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                ser.write(serial.to_bytes([0x7A,0x01,0x0B,0x33,0x43])) # open Box 11
-                print (ser.read())
-            if CODE == "101012":
-                print (" Box 12")
-                ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                ser.write(serial.to_bytes([0x7A,0x01,0x0C,0x33,0x44])) # open Box 12
-                print (ser.read())
-                #------------------------------------------------------------------------------------------------------------
-            if CODE == "101013":
-                print (" Box 13")
-                ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                ser.write(serial.to_bytes([0x7A,0x01,0x03,0x33,0x4B])) # open Box 13
-                print (ser.read())
-
-            else:
+            if form.cleaned_data['code'] == "89E154gs12828-34r0361R8t765-416d61g56D509": #Dashboard Key
+                return HttpResponseRedirect("/dashboard")
+            try:
+                models.Cell.objects.get(code=form.cleaned_data['code'])
+            except ObjectDoesNotExist:
                 form.add_error('code', "Wrong Code")
                 return render(request, 'home_base.html', { 'form':form })
+            else:
+                target = models.Cell.objects.get(code=form.cleaned_data['code'])
+                target_cell = target.cell
+                if target_cell == "89E154gs12828":
+                    print('target 1')
+                    #ser = serial.Serial('/dev/ttyUSB0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
+                    #ser.write(serial.to_bytes([0x7A,0x02,0x01,0x33,0xc5])) # open Box 1
+                    #print (ser.read())
+                    png_file = "static/" + form.cleaned_data['code'] + '.png'
+                    os.remove(png_file)
+                    target.delete()
+                if target_cell == "34r0361R8t765":
+                    print('target 2')
+                    #ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
+                    #ser.write(serial.to_bytes([0x7A,0x01,0x02,0x33,0x4A])) # open Box 2
+                    #print (ser.read())
+                    png_file = "static/" + form.cleaned_data['code'] + '.png'
+                    os.remove(png_file)
+                    target.delete()
+                if target_cell == "416d61g56D509":
+                    print('target 3')
+                    #ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
+                    #ser.write(serial.to_bytes([0x7A,0x01,0x03,0x33,0x4B])) # open Box 3
+                    #print (ser.read())
+                    png_file = "static/" + form.cleaned_data['code'] + '.png'
+                    os.remove(png_file)
+                    target.delete()
         else:
             form = forms.CodeForm(request.POST)
             return render(request, 'home_base.html', { 'form':form })
     return render(request, 'home_base.html', context )
+def dashboard(request):
+    data = {}
+    form = forms.OpenForm()
+    context   = { 'form':form }
+    if request.method == 'POST':
+        form = forms.OpenForm(request.POST)
+        if form.is_valid():
+            print ('Cell Number',form.cleaned_data['cell'],)
+            if form.cleaned_data['cell'] == "1":
+                print (" Box 1")
+                #ser = serial.Serial('/dev/ttyUSB0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
+                #ser.write(serial.to_bytes([0x7A,0x02,0x01,0x33,0xc5])) # open Box 1
+                #print (ser.read())
+            if form.cleaned_data['cell'] == "2":
+                print (" Box 2")
+                #ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
+                #ser.write(serial.to_bytes([0x7A,0x01,0x02,0x33,0x4A])) # open Box 2
+                #print (ser.read())
+            if form.cleaned_data['cell'] == "3":
+                print (" Box 3")
+                #ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
+                #ser.write(serial.to_bytes([0x7A,0x01,0x03,0x33,0x4B])) # open Box 3
+                #print (ser.read())
+        #else:
+        #    form.add_error('cell', "Wrong Cell")
+        #   return render(request, 'dashboard.html', { 'form':form })
+        else:
+            form = forms.OpenForm(request.POST)
+            return render(request, 'dashboard.html', { 'form':form })
+    return render(request, 'dashboard.html', context )
+
+def key(request, slug):
+    print(slug)
+    #img = qrcode.make( '89E154gs12828-34r0361R8t765-416d61g56D509')
+    #img_name = "static/" + '89E154gs12828-34r0361R8t765-416d61g56D509' + ".png"
+    #img.save(img_name)
+    if not slug :
+        return HttpResponseRedirect("/dashboard")
+    if slug == "89E154gs12828" or slug == "34r0361R8t765" or slug == "416d61g56D509":
+        cell_key = key_generator()
+        try:
+            models.Cell.objects.get(code=cell_key)
+        except ObjectDoesNotExist:
+            img = qrcode.make( cell_key)
+            img_name = "static/" + cell_key + ".png"
+            type(img)  # qrcode.image.pil.PilImage
+            img.save(img_name)
+            img_png = cell_key + ".png"
+            new_key = models.Cell( cell = slug, code = cell_key)
+            new_key.save()
+            context   = { 'cell_key': cell_key ,'cell': slug , 'img': img_png}
+            return render(request, 'key.html', context )
+        else:
+            return HttpResponseRedirect("/dashboard")
+    else:
+        return HttpResponseRedirect("/dashboard")
+
 
 def index404(request):
 	template = '404.html'
 	return render(request,template)
+
+#89E154gs12828
+#34r0361R8t765
+#416d61g56D509
+#89E154gs12828-34r0361R8t765-416d61g56D509

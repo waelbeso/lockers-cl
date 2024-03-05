@@ -14,7 +14,7 @@ from django.core.management.commands import runserver
 
 
 PORT = 8090
-IP = '127.0.0.1'
+IP = '0.0.0.0'
 ROOT_URL = f'http://{IP}:{PORT}'
  
 def app_main():

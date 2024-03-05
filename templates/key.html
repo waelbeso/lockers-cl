@@ -123,13 +123,13 @@
       <li>
         <a href="#" class="nav-link  active">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-          Locker Cell
+          Cell Key
         </a>
       </li>
       <li class="nav-item">
-        <a href="{% url 'home' %}" class="nav-link text-white" aria-current="page">
+        <a href="{% url 'dashboard' %}" class="nav-link text-white" aria-current="page">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#back"/></svg>
-          Client 
+          Dashboard
         </a>
       </li>
 <!--      <li>
@@ -146,7 +146,8 @@
 
   <div class="container">
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-
+Create key 
+<!-- <input type="button" value="Reload Page" onClick="window.location.reload()"> -->
       <ul class="nav nav-pills">
         <!--<li class="nav-item"><a href="{% url 'home' %}" class="nav-link active" aria-current="page">Home</a></li>-->
 
@@ -162,74 +163,56 @@
 -->
 
 
-{% if form.errors  %}
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-      {% for field in form %}
-           {% for error in field.errors %}
-                {{ error|escape }}
-           {% endfor %}
 
-      {% endfor %}
-</div>
-{% endif %}
+
 
 
 
 <ul class="list-group">
   <li class="list-group-item">
 
-<img class="card-img-left" src="{% static "A1.png"%}" alt="Card image cap">
-A1 Cell
-<div style ="position: absolute; bottom: 20px;right:10px;">
-  <form class="form-horizontal" action="" method="post">{% csrf_token %}
-    <div class="form-label-group">
-      <input type="hidden" name="{{ form.cell.name}}" class="form-control" value="1" required="">
-    </div>
-    <button class="btn btn-primary btn-lg active  " aria-pressed="true" type="submit">Open Cell&nbsp&nbsp</button>
-  </form>
-  <div style ="position: absolute; bottom: 60px;right:0px;">
-    <a href="#" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">Create key</a>
-  </div>
-</div>              
+{% if cell == "89E154gs12828"  %}
+<img class="card-img-left text-center" src="{% static 'A1.png'%}">
+A1 Cell key
+<hr class="hr" />
+<img class="card-img-top " src=" {% static img %}" >
+
+{% endif %}
+{% if cell == "34r0361R8t765"  %}
+<img class="card-img-left" src="{% static 'A2.png'%}" alt="Card image cap">
+A2 Cell key
+<hr class="hr" />
+<img class="card-img-top " src=" {% static img %}" >
+
+{% endif %}
+{% if cell == "416d61g56D509"  %}
+<img class="card-img-left" src="{% static 'A3.png'%}" alt="Card image cap">
+A3 Cell key
+<hr class="hr" />
+<img class="card-img-top " src=" {% static img %}" >
+
+{% endif %}
+
+    
 
   </li>
-  <li class="list-group-item">
 
-<img class="card-img-left" src="{% static "A2.png"%}" alt="Card image cap">
-A2 Cell
-<div style ="position: absolute; bottom: 20px;right:10px;">
-  <form class="form-horizontal" action="" method="post">{% csrf_token %}
-    <div class="form-label-group">
-      <input type="hidden" name="{{ form.cell.name}}" class="form-control" value="2" required="">
-    </div>
-    <button class="btn btn-primary btn-lg active  " aria-pressed="true" type="submit">Open Cell&nbsp&nbsp</button>
-  </form>
-  <div style ="position: absolute; bottom: 60px;right:0px;">
-    <a href="#" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">Create key</a>
-  </div>
-</div>
-
-  </li>
-  <li class="list-group-item">
-<img class="card-img-left" src="{% static "A3.png"%}" alt="Card image cap">
-A3 Cell
-<div style ="position: absolute; bottom: 20px;right:10px;">
-  <form class="form-horizontal" action="" method="post">{% csrf_token %}
-    <div class="form-label-group">
-      <input type="hidden" name="{{ form.cell.name}}" class="form-control" value="3" required="">
-    </div>
-    <button class="btn btn-primary btn-lg active  " aria-pressed="true" type="submit">Open Cell&nbsp&nbsp</button>
-  </form>
-  <div style ="position: absolute; bottom: 60px;right:0px;">
-    <a href="#" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">Create key</a>
-  </div>
-</div> 
-
-  </li>
 </ul>
 
+
+{% if cell_key  %}
+
+  <h1 class="text-center">
+  {{cell_key}}
+  </h1>
+<div class="alert alert-warning" role="alert">
+  Write the upper key or use the QR code to open your cell
+</div>
+{% endif %}
   </div>
 </div>
+
+
 {% endblock %}
 </main>
       <script src='{% static "sidebars.js"%}'></script>
