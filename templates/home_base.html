@@ -17,6 +17,18 @@
 
     <!-- Custom styles for this template -->
     <link href='{% static "cover.css" %}' rel="stylesheet">
+    <script>
+    window.onload = function() {
+    var input = document.getElementById("CodeNumberInput").focus();
+    }
+    document.onkeydown = function(evt) {
+      evt = evt || window.event;
+      if (evt.keyCode == 27) {
+        location.reload();
+      }
+    };
+    </script>
+    
   </head>
 
   <body class="text-center">
@@ -26,7 +38,7 @@
         <div class="inner">
           <!-- <h3 class="masthead-brand">Ftrina</h3> -->
           <nav class="nav nav-masthead justify-content-center">
-            <a class="nav-link" href="#">العربية</a>
+            <!-- <a class="nav-link" href="#">العربية</a>  -->
           </nav>
         </div>
       </header>
