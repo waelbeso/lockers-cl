@@ -14,17 +14,27 @@ def read(fname):
 # e.g. ['django==1.5.1', 'mezzanine==1.4.6']
 install_requires=[
    "altgraph==0.17.2",
-   "asgiref==3.5.2",
+   "asgiref==3.5.2"
    "backports.zoneinfo==0.2.1",
-   "Django==4.0.5",
-   "pycairo==1.21.0",
-   "PyGObject==3.42.2",
-   "sqlparse==0.4.2",
    "certifi==2022.6.15",
    "charset-normalizer==2.1.0",
+   "Django==4.0.5",
    "idna==3.3",
+   "pillow==10.2.0",
+   "pycairo==1.21.0",
+   "pyelftools==0.20",
+   "PyGObject==3.42.2",
+   "pyinstaller==5.1",
+   "pyinstaller-hooks-contrib==2022.7",
+   "pypng==0.20220715.0",
+   "PyQt5==5.15.2",
+   "PyQt5-sip==12.8.1",
+   "PyQtWebEngine==5.15.2",
    "pyserial==3.5",
+   "qrcode==7.4.2",
    "requests==2.28.1",
+   "sqlparse==0.4.2",
+   "typing-extensions==4.10.0",
    "urllib3==1.26.11",
 ]
 
