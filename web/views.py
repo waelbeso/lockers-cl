@@ -38,25 +38,25 @@ def home(request):
                 target_cell = target.cell
                 if target_cell == "89E154gs12828":
                     print('target 1')
-                    #ser = serial.Serial('/dev/ttyUSB0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                    #ser.write(serial.to_bytes([0x7A,0x02,0x01,0x33,0xc5])) # open Box 1
-                    #print (ser.read())
+                    ser = serial.Serial('/dev/ttyUSB0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
+                    ser.write(serial.to_bytes([0x7A,0x02,0x01,0x33,0xc5])) # open Box 1
+                    print (ser.read())
                     png_file = "static/" + form.cleaned_data['code'] + '.png'
                     os.remove(png_file)
                     target.delete()
                 if target_cell == "34r0361R8t765":
                     print('target 2')
-                    #ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                    #ser.write(serial.to_bytes([0x7A,0x01,0x02,0x33,0x4A])) # open Box 2
-                    #print (ser.read())
+                    ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
+                    ser.write(serial.to_bytes([0x7A,0x01,0x02,0x33,0x4A])) # open Box 2
+                    print (ser.read())
                     png_file = "static/" + form.cleaned_data['code'] + '.png'
                     os.remove(png_file)
                     target.delete()
                 if target_cell == "416d61g56D509":
                     print('target 3')
-                    #ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                    #ser.write(serial.to_bytes([0x7A,0x01,0x03,0x33,0x4B])) # open Box 3
-                    #print (ser.read())
+                    ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
+                    ser.write(serial.to_bytes([0x7A,0x01,0x03,0x33,0x4B])) # open Box 3
+                    print (ser.read())
                     png_file = "static/" + form.cleaned_data['code'] + '.png'
                     os.remove(png_file)
                     target.delete()
@@ -74,19 +74,19 @@ def dashboard(request):
             print ('Cell Number',form.cleaned_data['cell'],)
             if form.cleaned_data['cell'] == "1":
                 print (" Box 1")
-                #ser = serial.Serial('/dev/ttyUSB0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                #ser.write(serial.to_bytes([0x7A,0x02,0x01,0x33,0xc5])) # open Box 1
-                #print (ser.read())
+                ser = serial.Serial('/dev/ttyUSB0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
+                ser.write(serial.to_bytes([0x7A,0x02,0x01,0x33,0xc5])) # open Box 1
+                print (ser.read())
             if form.cleaned_data['cell'] == "2":
                 print (" Box 2")
-                #ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                #ser.write(serial.to_bytes([0x7A,0x01,0x02,0x33,0x4A])) # open Box 2
-                #print (ser.read())
+                ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
+                ser.write(serial.to_bytes([0x7A,0x01,0x02,0x33,0x4A])) # open Box 2
+                print (ser.read())
             if form.cleaned_data['cell'] == "3":
                 print (" Box 3")
-                #ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
-                #ser.write(serial.to_bytes([0x7A,0x01,0x03,0x33,0x4B])) # open Box 3
-                #print (ser.read())
+                ser = serial.Serial('/dev/ttyS0', 9600, bytesize=8, stopbits=1, parity='N',timeout=10)   # open serial port
+                ser.write(serial.to_bytes([0x7A,0x01,0x03,0x33,0x4B])) # open Box 3
+                print (ser.read())
         #else:
         #    form.add_error('cell', "Wrong Cell")
         #   return render(request, 'dashboard.html', { 'form':form })
@@ -97,9 +97,9 @@ def dashboard(request):
 
 def key(request, slug):
     print(slug)
-    #img = qrcode.make( '89E154gs12828-34r0361R8t765-416d61g56D509')
-    #img_name = "static/" + '89E154gs12828-34r0361R8t765-416d61g56D509' + ".png"
-    #img.save(img_name)
+    img = qrcode.make( '89E154gs12828-34r0361R8t765-416d61g56D509')
+    img_name = "static/" + '89E154gs12828-34r0361R8t765-416d61g56D509' + ".png"
+    img.save(img_name)
     if not slug :
         return HttpResponseRedirect("/dashboard")
     if slug == "89E154gs12828" or slug == "34r0361R8t765" or slug == "416d61g56D509":
