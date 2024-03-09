@@ -13,13 +13,6 @@ from gi.repository import WebKit2
 
 
 
-<<<<<<< HEAD
-
-=======
-from gi.repository import GLib
-GLib.threads_init()
->>>>>>> 6d6680d6ee3d6c6b314d241da294829276b4a550
-
 import sys
 import os
 from django.core.wsgi import get_wsgi_application
