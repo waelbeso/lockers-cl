@@ -1,6 +1,10 @@
 import threading
 import time
 import gi
+from gi.repository import GLib
+
+if getattr(GLib, "threads_init", None) is not None:
+    GLib.threads_init()
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
@@ -8,9 +12,6 @@ gi.require_version('WebKit2', '4.0')
 from gi.repository import WebKit2
 
 
-
-from gi.repository import GLib
-GLib.threads_init()
 
 import sys
 import os
@@ -33,6 +34,7 @@ def app_main():
 
     def start_django():
         django = runserver
+        #logging.info('D-Bus process started')
         GLib.idle_add(django.run(port=PORT,addr=bytearray(IP,"ascii"),wsgi_handler=get_wsgi_application()) )
 
 
