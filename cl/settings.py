@@ -126,5 +126,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #    os.path.join(BASE_DIR, "static"),
 #]
 #STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR,"static")
-STATIC_ROOT ="/home/pi/cl-env/lockers-cl/dist/lockers/_internal/static"
+STATIC_ROOT = os.path.join(BASE_DIR,"static")
+#STATIC_ROOT ="/home/pi/cl-env/lockers-cl/dist/lockers/_internal/static"
