@@ -3,7 +3,7 @@ import time
 import gi
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import GLib, Gtk, GObject
+from gi.repository import GLib, Gtk
 gi.require_version('WebKit2', '4.0')
 from gi.repository import WebKit2
 
