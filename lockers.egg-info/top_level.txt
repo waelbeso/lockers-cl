@@ -1,0 +1,6 @@
+cl
+lockers
+manage
+static
+templates
+web
