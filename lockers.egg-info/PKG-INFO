@@ -1,0 +1,19 @@
+Metadata-Version: 1.1
+Name: lockers
+Version: 0.0.1
+Summary: Smart lockers management Application
+Home-page: https://www.ftrina.com
+Author: Wael El-begearmi
+Author-email: waelabbas@live.com
+License: BSD
+Description: <h1 align="center">Welcome to Ftrina </h1>
+Keywords: ftrina smart lockers
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Topic :: Utilities
+Classifier: Environment :: X11 Applications :: GTK
+Classifier: Framework :: Django :: 4.0.5
+Classifier: Intended Audience :: logistics
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3.8
