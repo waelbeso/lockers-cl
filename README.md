@@ -34,9 +34,6 @@ The desktop launcher (`lockers.py`) simplifies deployment in kiosks by installin
 
 - Python 3.11 or newer
 - System packages required to build Python wheels (e.g. `build-essential`, `libssl-dev` on Debian-based systems)
-- **Desktop launcher only:** GTK 3 and Cairo development headers (`sudo apt install gir1.2-webkit2-4.0 gir1.2-gtk-3.0 libcairo2-dev`
-  on Debian/Ubuntu) so that PyGObject can compile. If those packages are unavailable the
-  launcher gracefully falls back to opening the Django site in the system browser.
 - Access to the serial device that controls the lockers
 
 ### Installing Dependencies
@@ -48,34 +45,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-The command above installs everything required for the Django web service and shared utilities. When you need the kiosk-style
-desktop launcher, install the extra dependencies as well:
-
-```bash
-pip install -r requirements-desktop.txt
-```
-
-Alternatively, when installing the package from a wheel or source distribution you can request the `desktop` extra:
-
-```bash
-pip install .[desktop]
-```
-
 If you are running the packaged desktop application, the launcher automatically checks for the required libraries and installs them into an isolated environment when missing.
-
-#### Troubleshooting PyGObject/Pycairo installation
-
-If `pip` reports an error similar to ``Run-time dependency cairo found: NO`` while resolving
-`PyGObject` or `pycairo`, install the missing system headers and retry the command:
-
-```bash
-sudo apt update
-sudo apt install -y build-essential libcairo2-dev gir1.2-webkit2-4.0 gir1.2-gtk-3.0
-```
-
-When the native bindings cannot be installed (for example on minimal containers) you can still
-use the desktop launcher: it will automatically open the lockers interface in your default
-browser instead of embedding GTK.
 
 ### Database Setup
 
@@ -119,34 +89,6 @@ python -m pytest
 ```
 
 The tests include hardware-independent coverage of the serial communication helpers and the desktop launcher orchestration. When contributing changes, please add or update tests to describe the new behaviour and ensure `pytest` passes before opening a pull request.
-
-## Building deployable apps
-
-The repository ships with automation for creating distributable packages of the kiosk launcher. Install the build toolchain once per environment:
-
-```bash
-python -m pip install -r requirements-build.txt
-```
-
-### Ubuntu desktop packages
-
-Use the Briefcase configuration in `pyproject.toml` together with the helper script to generate an AppImage and Debian-style bundle:
-
-```bash
-./scripts/build_ubuntu.sh
-```
-
-The script installs Briefcase if necessary, prepares the project definition, builds the binary, and deposits the packaged artifacts inside `build/lockers/linux`. System-level GTK/WebKit dependencies are declared in the Briefcase manifest and will be validated during the build.
-
-### Android APKs
-
-To produce a browser-based Android build that reuses the web launcher fallback, install the Android platform requirements and run:
-
-```bash
-./scripts/build_android.sh
-```
-
-Briefcase downloads the Android SDK/NDK on first use, compiles the Python bundle, and emits an unsigned APK in `build/lockers/android`. Because the kiosk experience relies on opening the Django dashboard in a system browser when GTK is not available, the Android package ships without PyGObject bindings.
 
 ## Contributing
 

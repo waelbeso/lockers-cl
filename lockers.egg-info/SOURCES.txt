@@ -1,8 +1,4 @@
 README.md
-pyproject.toml
-requirements-build.txt
-requirements-desktop.txt
-requirements.txt
 lockers.py
 lockers.spec
 manage.py
