@@ -1,56 +1,11 @@
 # Lockers Control & Desktop Launcher
 
-## Quick Start & Downloads
+Welcome to the **Lockers Control** project. This repository contains two complementary applications that work together to manage a network of physical lockers:
 
-Grab the freshest builds from the **vNEXT** GitHub Release:
+- A Django-based web service that records locker activity, manages QR-code based access tokens, and provides an operator-friendly dashboard for opening lockers remotely.
+- A lightweight cross-platform desktop utility that boots the Django backend and a bundled browser to deliver a kiosk-style experience for end users.
 
-- **Windows**: [Lockers Control Installer (.msi)](https://github.com/lockers-cl/lockers-cl/releases/download/vNEXT/Lockers-Setup-x64.msi) • [Portable one-folder (.exe)](https://github.com/lockers-cl/lockers-cl/releases/download/vNEXT/Lockers-Setup-x64.exe)
-- **macOS**: [Lockers Control Universal Disk Image (.dmg)](https://github.com/lockers-cl/lockers-cl/releases/download/vNEXT/LockersCL.dmg)
-- **Ubuntu**: [Debian package (.deb)](https://github.com/lockers-cl/lockers-cl/releases/download/vNEXT/lockerscl_amd64.deb) • [Generic archive (.tar.gz)](https://github.com/lockers-cl/lockers-cl/releases/download/vNEXT/LockersCL-linux-x64.tar.gz)
-- **Android**: [Kiosk WebView APK](https://github.com/lockers-cl/lockers-cl/releases/download/vNEXT/lockerscl-android-arm64.apk)
-
-Download the matching [SHA256SUMS](https://github.com/lockers-cl/lockers-cl/releases/download/vNEXT/SHA256SUMS) (and optional [SHA256SUMS.sig](https://github.com/lockers-cl/lockers-cl/releases/download/vNEXT/SHA256SUMS.sig)) file, then verify the artefacts before installation:
-
-```bash
-sha256sum -c SHA256SUMS
-```
-
-Unsigned community builds are clearly labelled in the release notes. On macOS and Windows you may need to approve the app via Gatekeeper/SmartScreen when signatures are unavailable.
-
-## How It Works
-
-Lockers Control couples a Django web tier that issues and redeems QR-based access codes with a serial driver that speaks to the locker controller. Operators issue QR codes, users present them at the kiosk, and the backend validates the request, dispatches the unlock command over serial, and then cleans up the QR artefact. The kiosk launcher (desktop or Android WebView) boots the backend locally when possible and falls back to a configured LAN server when not.
-
-## Build It Yourself
-
-The full contributor guide lives in [docs/BUILD_AND_CONTRIBUTE.md](docs/BUILD_AND_CONTRIBUTE.md). Quick recipes:
-
-- **Windows**
-
-  ```powershell
-  py -3.11 -m venv .venv; .venv\Scripts\activate; pip install -r requirements.txt; pyinstaller lockers.spec
-  ```
-
-- **macOS**
-
-  ```bash
-  python3.11 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && pyinstaller lockers.spec
-  ```
-
-- **Ubuntu / Linux**
-
-  ```bash
-  sudo apt install -y build-essential libgtk-3-dev libcairo2-dev gir1.2-webkit2-4.0
-  python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && pyinstaller lockers.spec
-  ```
-
-- **Android**
-
-  ```bash
-  cd android && ./gradlew assembleRelease
-  ```
-
-Continue below for a deeper architecture tour, installation notes, and contributor workflow.
+This document serves as the primary help page for contributors and operators. It explains how the system is structured, how it works under the hood, and how to install, configure, and run it.
 
 ## Project Overview
 
@@ -79,9 +34,6 @@ The desktop launcher (`lockers.py`) simplifies deployment in kiosks by installin
 
 - Python 3.11 or newer
 - System packages required to build Python wheels (e.g. `build-essential`, `libssl-dev` on Debian-based systems)
-- **Desktop launcher only:** GTK 3 and Cairo development headers (`sudo apt install gir1.2-webkit2-4.0 gir1.2-gtk-3.0 libcairo2-dev`
-  on Debian/Ubuntu) so that PyGObject can compile. If those packages are unavailable the
-  launcher gracefully falls back to opening the Django site in the system browser.
 - Access to the serial device that controls the lockers
 
 ### Installing Dependencies
@@ -93,34 +45,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-The command above installs everything required for the Django web service and shared utilities. When you need the kiosk-style
-desktop launcher, install the extra dependencies as well:
-
-```bash
-pip install -r requirements-desktop.txt
-```
-
-Alternatively, when installing the package from a wheel or source distribution you can request the `desktop` extra:
-
-```bash
-pip install .[desktop]
-```
-
 If you are running the packaged desktop application, the launcher automatically checks for the required libraries and installs them into an isolated environment when missing.
-
-#### Troubleshooting PyGObject/Pycairo installation
-
-If `pip` reports an error similar to ``Run-time dependency cairo found: NO`` while resolving
-`PyGObject` or `pycairo`, install the missing system headers and retry the command:
-
-```bash
-sudo apt update
-sudo apt install -y build-essential libcairo2-dev gir1.2-webkit2-4.0 gir1.2-gtk-3.0
-```
-
-When the native bindings cannot be installed (for example on minimal containers) you can still
-use the desktop launcher: it will automatically open the lockers interface in your default
-browser instead of embedding GTK.
 
 ### Database Setup
 
@@ -164,62 +89,6 @@ python -m pytest
 ```
 
 The tests include hardware-independent coverage of the serial communication helpers and the desktop launcher orchestration. When contributing changes, please add or update tests to describe the new behaviour and ensure `pytest` passes before opening a pull request.
-
-## Packaging & Release Automation
-
-The release scripts build reproducible artefacts on each operating system. Install the packaging toolchain and lock dependencies before cutting a release:
-
-```bash
-python -m pip install -r requirements-build.txt
-python -m pip install -r requirements.txt
-python -m pip freeze > requirements-lock.txt
-```
-
-### Windows (x64)
-
-```powershell
-Set-ExecutionPolicy -Scope Process Bypass
-python -m pip install -r requirements.txt
-pyinstaller lockers.spec --noconfirm
-pwsh -File scripts/build_windows.ps1
-```
-
-The script renames the PyInstaller output to `Lockers-Setup-x64.exe`, generates an `.msi` installer via the WiX toolset, and copies both artefacts plus SHA256 hashes into `dist/releases`.
-
-### macOS (Universal)
-
-```bash
-./scripts/build_macos.sh
-```
-
-The helper builds a universal2 binary with PyInstaller, signs/notarises it when credentials are available, creates a `.dmg`, and stages the results in `dist/releases/`.
-
-### Ubuntu 22.04/24.04
-
-```bash
-./scripts/build_ubuntu.sh
-```
-
-This wrapper installs `fpm` when missing, runs PyInstaller, assembles a `.deb` targeting `/opt/lockers-cl`, and emits a portable `.tar.gz` archive alongside updated checksums.
-
-### Android APK
-
-```bash
-cd android
-./gradlew clean assembleRelease
-```
-
-The Gradle project ships a Chromium-based WebView shell that can start a bundled backend (Termux-compatible) or point to a LAN server. Release builds land in `android/app/build/outputs/apk/release/` and are copied into `dist/releases` via `scripts/build_android.sh`.
-
-### Continuous Delivery
-
-GitHub Actions reproduces the full matrix in [`.github/workflows/release.yml`](.github/workflows/release.yml). Tagging a commit with `v*` or using the manual dispatch triggers the pipeline:
-
-1. `test` – installs dependencies, runs `python -m pytest`, and executes the smoke workflow against the serial mock.
-2. `build_windows`, `build_macos`, `build_linux`, and `build_android` – run the scripts above on their native runners, upload artefacts, and publish `SHA256SUMS`/`SHA256SUMS.sig`.
-3. `publish` – assembles the **vNEXT** release with the generated installers and release notes.
-
-The workflow automatically notes when signing credentials are unavailable and marks the release as an unsigned community build.
 
 ## Contributing
 

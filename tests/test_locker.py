@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import contextlib
 import tempfile
 from pathlib import Path
+from types import SimpleNamespace
 import unittest
 
 from web import locker
@@ -23,23 +23,32 @@ class LockerHelpersTests(unittest.TestCase):
     def test_trigger_locker_success_with_mock_serial(self):
         calls: dict[str, bytes] = {}
 
-        @contextlib.contextmanager
-        def dummy_factory(*args, **kwargs):
-            class DummyConnection:
-                def write(self, data: bytes):
-                    calls["write"] = data
+        class DummySerial:
+            def __init__(self, *args, **kwargs):
+                self.args = args
+                self.kwargs = kwargs
 
-                def read(self, size: int = 1):  # pragma: no cover - nothing to return
-                    return b""
+            def __enter__(self):
+                return self
 
-            yield DummyConnection()
+            def __exit__(self, exc_type, exc, tb):
+                return False
 
-        locker.configure_serial_backend(dummy_factory)
+            def write(self, data: bytes):
+                calls["write"] = data
+
+            def read(self):  # pragma: no cover - nothing to return
+                return b""
+
+        dummy_serial = SimpleNamespace(Serial=DummySerial, SerialException=Exception)
+
+        original_serial_module = locker._serial_module
         try:
+            locker._serial_module = lambda: dummy_serial
             self.assertTrue(locker.trigger_locker("1"))
             self.assertEqual(calls["write"], bytes(locker.LOCKER_COMMANDS["1"]))
         finally:
-            locker.configure_serial_backend(None)
+            locker._serial_module = original_serial_module
 
     def test_trigger_locker_unknown_identifier(self):
         self.assertFalse(locker.trigger_locker("unknown"))
