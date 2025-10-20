@@ -1,4 +1,5 @@
-README
+README.md
+requirements-desktop.txt
 lockers.py
 manage.py
 setup.py
