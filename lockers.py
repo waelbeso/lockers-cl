@@ -100,6 +100,8 @@ def _run_gui(
         if ready_event is not None:
             ready_event.set()
 
+        if ready_event is not None:
+            ready_event.set()
 
 def _run_server(config: DesktopConfig) -> None:
     """Run Django's development server inside a worker thread."""
@@ -113,6 +115,16 @@ def _run_server(config: DesktopConfig) -> None:
     LOGGER.info("Starting Django development server on %s:%s", config.host, config.port)
     call_command("runserver", f"{config.host}:{config.port}")
 
+    try:
+        success = webbrowser.open(config.root_url, new=1)
+        if not success:  # pragma: no cover - webbrowser returns False rarely
+            raise DesktopDependencyError(
+                "Unable to open the system web browser automatically."
+            )
+        LOGGER.info("Opened system browser for lockers interface at %s", config.root_url)
+    finally:
+        if ready_event is not None:
+            ready_event.set()
 
 class DesktopApp:
     """Coordinator that starts both the Django server and the GTK interface."""
@@ -159,6 +171,18 @@ class DesktopApp:
         if self.server_thread is not None:
             self.server_thread.join()
 
+        try:
+            modules = _load_gi_modules()
+        except DesktopDependencyError as exc:  # pragma: no cover - depends on env
+            LOGGER.warning(
+                "GTK/WebKit bindings are unavailable (%s); falling back to the system browser.",
+                exc,
+            )
+            gui_target = _launch_system_browser
+            gui_args = (self.config,)
+        else:
+            gui_target = _run_gui
+            gui_args = (self.config, modules)
 
 def main() -> None:
     """Console script entry point used by ``python -m lockers``."""
@@ -166,6 +190,8 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO)
     DesktopApp().start().join()
 
+    def wait_for_gui(self, timeout: Optional[float] = None) -> bool:
+        """Block until the GUI thread signalled that the window is ready."""
 
 if __name__ == "__main__":  # pragma: no cover - manual execution hook
     main()
