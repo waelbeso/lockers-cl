@@ -1,15 +1,9 @@
 README.md
-pyproject.toml
-requirements-build.txt
-requirements-desktop.txt
-requirements.txt
 lockers.py
 lockers.spec
 manage.py
 scripts/build_android.sh
-scripts/build_macos.sh
 scripts/build_ubuntu.sh
-scripts/build_windows.ps1
 setup.py
 cl/__init__.py
 cl/asgi.py

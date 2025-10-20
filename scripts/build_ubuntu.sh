@@ -2,8 +2,8 @@
 set -euo pipefail
 
 if ! command -v briefcase >/dev/null 2>&1; then
-  echo "Installing Briefcase with Linux support..."
-  python -m pip install --upgrade "briefcase[linux]"
+  echo "Installing briefcase..."
+  python -m pip install --upgrade briefcase
 fi
 
 echo "Creating Briefcase Linux project"
@@ -14,7 +14,3 @@ briefcase build linux
 
 echo "Packaging Linux app"
 briefcase package linux
-
-echo "Collecting distributable artefacts"
-mkdir -p dist/releases
-find build/lockers/linux -maxdepth 1 -type f \( -name "*.AppImage" -o -name "*.deb" \) -exec cp {} dist/releases/ \;
