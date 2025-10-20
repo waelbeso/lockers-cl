@@ -1,0 +1,87 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.briefcase]
+project_name = "Lockers Control"
+bundle = "com.ftrina.lockers"
+version = "0.1.0"
+url = "https://www.ftrina.com"
+license = "BSD-3-Clause"
+author = "Wael El-begearmi"
+author_email = "waelabbas@live.com"
+
+[tool.briefcase.app.lockers]
+formal_name = "Lockers Control"
+description = "Smart lockers management application"
+icon = "ocrmypdfgui.png"
+install_requires = [
+    "Django==5.1.3",
+    "pyserial==3.5",
+    "qrcode==7.4.2",
+    "pillow==11.0.0",
+    "requests==2.32.3",
+    "asgiref==3.8.1",
+    "sqlparse==0.5.1",
+    "typing_extensions==4.12.2",
+]
+sources = [
+    "lockers.py",
+    "manage.py",
+    "cl",
+    "static",
+    "templates",
+    "web",
+]
+requires = [
+    "certifi==2024.8.30",
+    "charset-normalizer==3.4.0",
+    "idna==3.10",
+    "packaging==24.1",
+    "urllib3==2.2.3",
+]
+
+[tool.briefcase.app.lockers.macOS]
+requires = []
+
+[tool.briefcase.app.lockers.linux]
+requires = [
+    "PyGObject==3.48.2",
+    "pycairo==1.26.0",
+]
+system_requires = [
+    "libgtk-3-0",
+    "gir1.2-gtk-3.0",
+    "gir1.2-webkit2-4.0",
+    "libcairo2",
+]
+
+[tool.briefcase.app.lockers.windows]
+requires = []
+
+[tool.briefcase.app.lockers.android]
+requires = []
+permissions = [
+    "INTERNET",
+]
+
+[tool.briefcase.app.lockers.android.gradle]
+arguments = ["-Puse_legacy_jvm_args=true"]
+
+[tool.briefcase.app.lockers.appimage]
+requires = []
+
+[tool.briefcase.app.lockers.flatpak]
+requires = []
+
+[tool.briefcase.app.lockers.ubuntu]
+requires = [
+    "PyGObject==3.48.2",
+    "pycairo==1.26.0",
+]
+system_requires = [
+    "libgtk-3-0",
+    "gir1.2-gtk-3.0",
+    "gir1.2-webkit2-4.0",
+    "libcairo2",
+]
