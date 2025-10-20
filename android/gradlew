@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if command -v gradle >/dev/null 2>&1; then
+  exec gradle "$@"
+else
+  echo "Gradle is required to build the Android project. Install Gradle or run via GitHub Actions." >&2
+  exit 1
+fi

@@ -75,6 +75,19 @@ def _initialise_threads(modules: SimpleNamespace) -> None:
     if callable(threads_init):  # pragma: no branch - simple attribute check
         threads_init()
 
+        web_view = modules.WebKit2.WebView()
+        window.add(web_view)
+        web_view.load_uri(config.root_url)
+        window.show_all()
+
+        if ready_event is not None:
+            ready_event.set()
+
+        LOGGER.info("Starting GTK main loop for lockers desktop UI")
+        modules.Gtk.main()
+    finally:
+        if ready_event is not None:
+            ready_event.set()
 
 def _run_gui(
     config: DesktopConfig,
