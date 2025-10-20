@@ -3,16 +3,15 @@
 Web URL Configuration
 
 """
-from django.urls import path
-from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path
 
-#from django.views.decorators.csrf import csrf_exempt
+from . import views
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path(r'dashboard', views.dashboard, name='dashboard'),
-    path(r'key/(?P<slug>[\w-]+)/', views.key, name='key'),
-    path('404', views.index404, name='index404'),
+    path("", views.home, name="home"),
+    path("dashboard/", views.dashboard, name="dashboard"),
+    path("key/<slug:slug>/", views.key, name="key"),
+    path("404", views.index404, name="index404"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
