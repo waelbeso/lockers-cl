@@ -2,29 +2,11 @@
 
 from __future__ import annotations
 
-from contextlib import contextmanager
 from pathlib import Path
 import logging
-import os
-from typing import Callable, ContextManager, Mapping, Protocol
+from typing import Mapping
 
 LOGGER = logging.getLogger(__name__)
-
-
-class SerialConnection(Protocol):
-    """Protocol implemented by serial connections used for testing."""
-
-    def write(self, data: bytes) -> int | None:  # pragma: no cover - duck typing
-        ...
-
-    def read(self, size: int = 1) -> bytes:  # pragma: no cover - duck typing
-        ...
-
-
-SerialFactory = Callable[..., ContextManager[SerialConnection]]
-
-
-_SERIAL_FACTORY: SerialFactory | None = None
 
 # Serial connection defaults. These mirror the previously in-lined constants.
 SERIAL_PORT = "/dev/ttyUSB0"
@@ -66,57 +48,6 @@ def _serial_module():  # pragma: no cover - exercised indirectly in tests
     return serial
 
 
-def configure_serial_backend(factory: SerialFactory | None) -> None:
-    """Configure the serial backend used by :func:`trigger_locker`.
-
-    The project uses real serial hardware in production but all automated tests
-    run against a simulated controller.  Providing a factory function keeps the
-    production code simple while allowing the test-suite to inject a lightweight
-    in-memory backend.
-    """
-
-    global _SERIAL_FACTORY
-    _SERIAL_FACTORY = factory
-
-
-def _serial_factory() -> SerialFactory | None:
-    """Return the configured serial factory, falling back to ``pyserial``."""
-
-    if _SERIAL_FACTORY is not None:
-        return _SERIAL_FACTORY
-
-    env_backend = os.environ.get("LOCKERS_SERIAL_BACKEND")
-    if env_backend and env_backend.lower() == "mock":
-        LOGGER.info("Using environment-configured mock serial backend")
-
-        @contextmanager
-        def mock_factory(*args, **kwargs):
-            class MockConnection:
-                def write(self, data: bytes):
-                    LOGGER.debug("mock serial write: %s", data)
-
-                def read(self, size: int = 1) -> bytes:
-                    return b"\x06"
-
-            yield MockConnection()
-
-        return mock_factory
-
-    serial = _serial_module()
-    if serial is None:
-        return None
-
-    @contextmanager
-    def pyserial_factory(*args, **kwargs):
-        connection = serial.Serial(*args, **kwargs)  # type: ignore[attr-defined]
-        try:
-            yield connection
-        finally:  # pragma: no cover - thin wrapper
-            connection.close()
-
-    return pyserial_factory
-
-
 def trigger_locker(locker_identifier: str) -> bool:
     """Send the open command to the configured locker.
 
@@ -138,16 +69,15 @@ def trigger_locker(locker_identifier: str) -> bool:
         LOGGER.warning("Unknown locker identifier: %s", locker_identifier)
         return False
 
-    factory = _serial_factory()
-    if factory is None:
+    serial = _serial_module()
+    if serial is None:
         LOGGER.error("pyserial is not installed; cannot trigger locker %s", locker_identifier)
         return False
 
-    serial = _serial_module()
-    SerialException = getattr(serial, "SerialException", Exception) if serial else Exception
+    SerialException = getattr(serial, "SerialException", Exception)
 
     try:
-        with factory(
+        with serial.Serial(  # type: ignore[attr-defined]
             SERIAL_PORT,
             SERIAL_BAUDRATE,
             bytesize=SERIAL_BYTESIZE,

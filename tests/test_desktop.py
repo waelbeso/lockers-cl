@@ -111,13 +111,11 @@ class DesktopServerTests(unittest.TestCase):
 
 
 class DesktopAppTests(unittest.TestCase):
-    @mock.patch("lockers._load_gi_modules")
     @mock.patch("lockers._run_server")
     @mock.patch("lockers._run_gui")
-    def test_start_creates_threads(self, run_gui, run_server, load_modules):
+    def test_start_creates_threads(self, run_gui, run_server):
         run_gui.side_effect = lambda *args, **kwargs: None
         run_server.side_effect = lambda *args, **kwargs: None
-        load_modules.return_value = object()
 
         app = lockers.DesktopApp(lockers.DesktopConfig())
         app.start()
@@ -128,49 +126,10 @@ class DesktopAppTests(unittest.TestCase):
         app.join()
         self.assertTrue(run_gui.called)
         self.assertTrue(run_server.called)
-        load_modules.assert_called_once()
-
-    @mock.patch("lockers.webbrowser.open", return_value=True)
-    @mock.patch("lockers._load_gi_modules", side_effect=lockers.DesktopDependencyError("missing"))
-    @mock.patch("lockers._run_server")
-    def test_start_falls_back_to_browser(self, run_server, load_modules, browser_open):
-        run_server.side_effect = lambda *args, **kwargs: None
-
-        app = lockers.DesktopApp(lockers.DesktopConfig())
-        app.start()
-
-        self.assertIsNotNone(app.gui_thread)
-        self.assertTrue(browser_open.called)
-
-        app.join()
-        load_modules.assert_called_once()
-        browser_open.assert_called_once()
 
     def test_wait_for_gui_without_start_returns_false(self):
         app = lockers.DesktopApp()
         self.assertFalse(app.wait_for_gui(0.01))
-
-    @mock.patch("lockers.webbrowser.open", return_value=False)
-    def test_launch_system_browser_sets_event_on_failure(self, browser_open):
-        event = threading.Event()
-        with self.assertRaises(lockers.DesktopDependencyError):
-            lockers._launch_system_browser(lockers.DesktopConfig(), ready_event=event)
-
-        self.assertTrue(event.is_set())
-        browser_open.assert_called_once()
-
-    @mock.patch("lockers._headless_gui")
-    @mock.patch("lockers._run_server")
-    def test_headless_mode_skips_gui_launch(self, run_server, headless_gui):
-        run_server.side_effect = lambda *args, **kwargs: None
-        headless_gui.side_effect = lambda *args, **kwargs: None
-
-        with mock.patch.dict(os.environ, {"LOCKERS_HEADLESS": "1"}):
-            app = lockers.DesktopApp(lockers.DesktopConfig())
-            app.start()
-            app.join()
-
-        headless_gui.assert_called_once()
 
 
 if __name__ == "__main__":  # pragma: no cover - manual execution guard
