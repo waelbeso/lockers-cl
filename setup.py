@@ -12,27 +12,34 @@ def read(fname):
 
 # reqs is a list of requirement
 # e.g. ['django==1.5.1', 'mezzanine==1.4.6']
-install_requires=[
-   "altgraph==0.17.2",
-   "asgiref==3.5.2",
-   "certifi==2022.6.15",
-   "charset-normalizer==2.1.0",
-   "Django==4.0.5",
-   "idna==3.3",
-   "packaging==23.2",
-   "pillow==10.2.0",
-   "pycairo==1.26.0",
-   "pyelftools==0.20",
-   "PyGObject==3.46.0",
-   "pyinstaller==6.4.0",
-   "pyinstaller-hooks-contrib==2024.2",
-   "pypng==0.20220715.0",
-   "pyserial==3.5",
-   "qrcode==7.4.2",
-   "requests==2.28.1",
-   "sqlparse==0.4.2",
-   "typing_extensions==4.10.0",
-   "urllib3==1.26.11",
+install_requires = [
+    "altgraph==0.17.4",
+    "asgiref==3.8.1",
+    "certifi==2024.8.30",
+    "charset-normalizer==3.4.0",
+    "Django==5.1.3",
+    "idna==3.10",
+    "packaging==24.1",
+    "pillow==11.0.0",
+    "pyelftools==0.31",
+    "pyinstaller==6.11.0",
+    "pyinstaller-hooks-contrib==2024.9",
+    "pypng==0.20220715.0",
+    "pyserial==3.5",
+    "qrcode==7.4.2",
+    "requests==2.32.3",
+    "sqlparse==0.5.1",
+    "typing_extensions==4.12.2",
+    "urllib3==2.2.3",
+]
+
+desktop_extras = [
+    "PyGObject==3.48.2",
+    "pycairo==1.26.0",
+]
+
+packaging_extras = [
+    "briefcase==0.3.20",
 ]
 
 
@@ -56,14 +63,19 @@ setup(
     package_data = {
     'templates': ['*.html']
     },
-    long_description=read('README'),
+    long_description=read('README.md'),
+    long_description_content_type='text/markdown',
     install_requires=install_requires,
+    extras_require={
+        "desktop": desktop_extras,
+        "packaging": packaging_extras,
+    },
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities",
         "Environment :: X11 Applications :: GTK",
-        "Framework :: Django :: 4.0.5",
-        "Intended Audience :: logistics",
+        "Framework :: Django :: 5.1",
+        "Intended Audience :: Logistics",
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3.8",
