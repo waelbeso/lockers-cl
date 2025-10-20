@@ -11,6 +11,7 @@ from typing import Optional
 
 LOGGER = logging.getLogger(__name__)
 
+    return SimpleNamespace(gi=gi, GObject=GObject, GLib=GLib, Gtk=Gtk, WebKit2=WebKit2)
 
 class DesktopDependencyError(RuntimeError):
     """Raised when a runtime dependency required by the desktop UI is missing."""
@@ -32,6 +33,11 @@ class DesktopConfig:
 
         return self.start_url or f"http://{self.host}:{self.port}"
 
+    try:
+        window = modules.Gtk.Window(
+            default_height=config.window_height, default_width=config.window_width
+        )
+        window.connect("destroy", modules.Gtk.main_quit)
 
 def _load_gi_modules() -> SimpleNamespace:
     """Import and configure the required PyGObject modules.

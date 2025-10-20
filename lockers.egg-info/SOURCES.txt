@@ -1,6 +1,9 @@
 README.md
 lockers.py
+lockers.spec
 manage.py
+scripts/build_android.sh
+scripts/build_ubuntu.sh
 setup.py
 cl/__init__.py
 cl/asgi.py
