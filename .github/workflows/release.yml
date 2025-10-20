@@ -1,0 +1,210 @@
+name: Release builds
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: python -m pytest
+
+      - name: Smoke desktop workflow
+        env:
+          LOCKERS_SERIAL_BACKEND: mock
+        run: python scripts/ci_smoke.py
+
+  build_linux:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ruby ruby-dev rubygems build-essential
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-build.txt
+
+      - name: Build Linux artefacts
+        run: ./scripts/build_ubuntu.sh
+
+      - name: Upload Linux artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: dist/releases/*
+
+  build_windows:
+    runs-on: windows-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-build.txt
+
+      - name: Build Windows installers
+        run: |
+          powershell -ExecutionPolicy Bypass -File scripts/build_windows.ps1
+
+      - name: Upload Windows artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: dist/releases/*
+
+  build_macos:
+    runs-on: macos-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install build dependencies
+        run: |
+          brew update
+          brew install create-dmg gtk+3 webkit2gtk cairo gnu-tar
+          python3 -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-build.txt
+
+      - name: Build macOS artefacts
+        run: ./scripts/build_macos.sh
+
+      - name: Upload macOS artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos
+          path: dist/releases/*
+
+  build_android:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Gradle
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          api-level: 34
+          build-tools: '34.0.0'
+
+      - name: Build Android APK
+        run: |
+          pip install -r requirements.txt
+          ./scripts/build_android.sh
+
+      - name: Upload Android artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: dist/releases/*
+
+  publish:
+    runs-on: ubuntu-latest
+    needs:
+      - build_linux
+      - build_windows
+      - build_macos
+      - build_android
+    steps:
+      - name: Download Linux artefacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux
+          path: staging/linux
+
+      - name: Download Windows artefacts
+        uses: actions/download-artifact@v4
+        with:
+          name: windows
+          path: staging/windows
+
+      - name: Download macOS artefacts
+        uses: actions/download-artifact@v4
+        with:
+          name: macos
+          path: staging/macos
+
+      - name: Download Android artefacts
+        uses: actions/download-artifact@v4
+        with:
+          name: android
+          path: staging/android
+
+      - name: Assemble release payload
+        run: |
+          mkdir -p release
+          for platform in linux windows macos android; do
+            find "staging/$platform" -maxdepth 1 -type f ! -name 'SHA256SUMS' -exec cp {} release/ \;
+          done
+          (cd release && sha256sum $(ls) > SHA256SUMS)
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: vNEXT
+          body: |
+            Automated build for ${{ github.ref_name }}.
+            
+            Platforms: Windows, macOS, Ubuntu, Android.
+          files: release/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

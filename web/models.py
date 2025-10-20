@@ -11,4 +11,6 @@ class Cell(models.Model):
     used      = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.id
+        """Return a readable representation that works before the object is saved."""
+
+        return f"{self.cell} ({self.code})"
