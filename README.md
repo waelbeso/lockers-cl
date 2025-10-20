@@ -34,8 +34,6 @@ The desktop launcher (`lockers.py`) simplifies deployment in kiosks by installin
 
 - Python 3.11 or newer
 - System packages required to build Python wheels (e.g. `build-essential`, `libssl-dev` on Debian-based systems)
-- **Desktop launcher only:** GTK 3 and Cairo development headers (`sudo apt install gir1.2-webkit2-4.0 gir1.2-gtk-3.0 libcairo2-dev`
-  on Debian/Ubuntu) so that PyGObject can compile.
 - Access to the serial device that controls the lockers
 
 ### Installing Dependencies
@@ -45,19 +43,6 @@ python -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
-```
-
-The command above installs everything required for the Django web service and shared utilities. When you need the kiosk-style
-desktop launcher, install the extra dependencies as well:
-
-```bash
-pip install -r requirements-desktop.txt
-```
-
-Alternatively, when installing the package from a wheel or source distribution you can request the `desktop` extra:
-
-```bash
-pip install .[desktop]
 ```
 
 If you are running the packaged desktop application, the launcher automatically checks for the required libraries and installs them into an isolated environment when missing.
